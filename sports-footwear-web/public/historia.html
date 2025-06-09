@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiénes Somos - CheRope</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../src/styles.css">
+    <link rel="stylesheet" href="../src/carrito.css">
+</head>
+<body>
+    <header class="bg-dark text-white py-3 mb-4">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 mt-4 rounded">
+                <div class="container justify-content-center">
+                    <ul class="navbar-nav flex-row">
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-white fw-semibold" href="index.html">Inicio</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-white fw-semibold" href="historia.html">Quiénes Somos</a>
+                        </li>
+                        <li class="nav-item dropdown mx-2">
+                            <a class="nav-link dropdown-toggle text-white fw-semibold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Shop
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" data-categoria="accesorios">Accesorios</a></li>
+                                <li><a class="dropdown-item" href="#" data-categoria="jeans">Jeans</a></li>
+                                <li><a class="dropdown-item" href="#" data-categoria="deportivos">Deportivos</a></li>
+                                <li><a class="dropdown-item" href="#" data-categoria="remeras">Remeras</a></li>
+                                <li><a class="dropdown-item" href="#" data-categoria="shorts">Shorts</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-white fw-semibold" href="index.html#productos" data-categoria="sale">Sale</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-white fw-semibold" href="contacto.html">Contacto</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container d-flex flex-column align-items-center justify-content-center" style="min-height: 70vh;">
+        <h2 class="mb-3 text-center">Quiénes somos</h2>
+        <p class="mb-4 text-center" style="max-width: 600px;">Soy Valentina, la persona detrás de este proyecto. Todo comenzó en 2020 como una pequeña iniciativa desde casa, impulsada por mi amor por la moda sustentable. Con el tiempo, se transformó en mi ocupación principal. En 2021, gracias al apoyo de quienes confiaron en nosotros desde el inicio, abrimos nuestro primer showroom en Pocitos, buscando ofrecer una experiencia de compra más cercana, cómoda y consciente..</p>
+
+         <p class="mb-4 text-center" style="max-width: 600px;">En 2022, lanzamos nuestra tienda online para que puedas acceder a nuestras prendas desde cualquier lugar, de forma práctica y rápida.</p>
+
+        <p class="mb-4 text-center" style="max-width: 600px;">En 2024, dimos un gran paso y nos instalamos en un nuevo local en Cordón, más amplio y accesible, ideal para que vengas a probarte todo lo que te guste con total tranquilidad.</p>
+       
+    </main>
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <p class="mb-1">&copy; 2025 Ropa y Calzado de Segunda Mano</p>
+    </footer>
+    <div class="d-flex align-items-center gap-3 ms-auto">
+      <a href="#" class="text-white" data-bs-toggle="modal" data-bs-target="#loginModal" title="Login/Registro">
+        <i id="iconoUsuario" class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
+      </a>
+      <span id="bienvenidaUsuario" class="ms-2 text-white fw-semibold d-none"></span>
+    </div>
+
+    <!-- Modal Login/Registro (puedes copiar el mismo bloque de index.html) -->
+    <!-- ...modal aquí... -->
+    <script src="../src/carritoAPI.js"></script>
+    <script src="../src/carrito.js"></script>
+    <script src="../src/login.js"></script>
+</body>
+</html>

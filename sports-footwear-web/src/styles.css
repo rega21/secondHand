@@ -1,0 +1,179 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1100;
+    background: #212529; /* o el color de tu navbar */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  /*  border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;*/
+}
+
+.navbar {
+    min-height: 40px;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+}
+
+.navbar-nav .nav-link,
+.navbar-nav .nav-link:visited {
+    color: #fff !important;
+    font-weight: 500;
+    transition: color 0.2s, border-bottom 0.2s;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #00c6ff !important;
+    background: none;
+}
+
+.navbar-nav .nav-link.active {
+    color: #fff !important;
+    background: none !important;
+    border-bottom: 1px solid #fff;
+    font-weight: 700;
+}
+
+.nav-link.active {
+  background-color: #007bff;
+  color: #fff !important;
+}
+
+#hero {
+    background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
+    color: white;
+    border-radius: 1rem;
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+}
+
+#productos h2 {
+    color: #007bff;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+footer {
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    font-weight: 500;
+    background: linear-gradient(90deg, #007bff 0%, #000000 100%);
+    color: #fff !important;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+}
+
+.card-producto {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    background: #fff;
+}
+
+.card-producto:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 6px 24px rgba(0,123,255,0.15);
+}
+
+.card-producto img {
+    border-radius: 1rem 1rem 0 0;
+    object-fit: cover;
+    height: 180px;
+    width: 100%;
+}
+
+.card-producto .card-title {
+    color: #007bff;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.card-producto .card-text {
+    color: #555;
+    font-size: 1rem;
+}
+
+.btn-comprar {
+    background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 2rem;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.07);
+}
+
+.btn-comprar:hover {
+    background: linear-gradient(90deg, #0056b3 0%, #007bff 100%);
+    color: #e0e0e0;
+}
+
+.producto.fade {
+    transition: opacity 0.2s;
+    opacity: 0;
+}
+.producto.fade.show {
+    opacity: 1;
+}
+
+h1.display-6 {
+    font-family: 'Dancing Script', cursive;
+    font-weight: 700;
+    font-size: 2.8rem;
+    letter-spacing: 1px;
+    color: #000000;
+    text-transform: none;
+    text-shadow: none;
+}
+
+.fs-5.text-primary {
+    font-family: 'Dancing Script', cursive;
+    color: #000 !important;
+    font-size: 2rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+/* Estilo para los botones principales debajo del título */
+.btn-principal {
+    background: none;
+    border: none;
+    color: #212529;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: background 0.2s, color 0.2s;
+    text-decoration: none;
+}
+
+.btn-principal:hover,
+.btn-principal.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+
+#slider-precio .noUi-connect {
+  background: #0d6efd;
+}
+
+#slider-precio .noUi-tooltip {
+  display: none !important;
+}
+
+
+@media (min-width: 992px) {
+  .navbar-nav .dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+  }
+}

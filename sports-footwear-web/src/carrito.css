@@ -1,0 +1,121 @@
+#carritoLista {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #e3e3e3;
+    border-radius: 1rem;
+    padding: 1.2rem 1rem 1rem 1rem;
+    z-index: 1050;
+    min-width: 320px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: fadeInDown 0.3s;
+    font-size: 1rem;
+    right: 32px;
+    left: auto !important;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: #007bff #f0f0f0;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-16px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+#carritoLista ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#carritoLista li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 0.7rem;
+    transition: background 0.2s;
+}
+
+#carritoLista li:hover {
+    background: #f8f9fa;
+}
+
+#carritoLista img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    border: 1px solid #eee;
+}
+
+#carritoLista .btn {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.95rem;
+}
+
+#carritoLista .btn-quitar-carrito {
+    margin-left: 0.5rem;
+}
+
+#carritoLista h5 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.7rem;
+}
+
+#carritoLista .text-end {
+    text-align: right;
+}
+
+#carritoLista .carrito-total {
+    text-align: right;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #007bff;
+    margin-top: 0.5rem;
+}
+
+#carritoLista.carrito-popup-flecha::before {
+    content: "";
+    position: absolute;
+    top: -12px;
+    right: 32px;
+    border-width: 0 10px 12px 10px;
+    border-style: solid;
+    border-color: transparent transparent #fff transparent;
+    filter: drop-shadow(0 -2px 2px rgba(0,0,0,0.08));
+}
+
+#carritoLista::-webkit-scrollbar {
+    width: 8px;
+}
+#carritoLista::-webkit-scrollbar-thumb {
+    background: #007bff;
+    border-radius: 4px;
+}
+#carritoLista::-webkit-scrollbar-track {
+    background: #f0f0f0;
+}
+
+@media (max-width: 600px) {
+    #carritoLista {
+        right: 2vw;
+        left: auto !important;
+        top: 70px !important;
+        min-width: 95vw;
+        max-width: 98vw;
+        border-radius: 0.7rem;
+        padding: 1rem 0.5rem 0.5rem 0.5rem;
+        transform: none;
+    }
+    #carritoLista.carrito-popup-flecha::before {
+        right: 24px;
+    }
+}
+
+
+
+
