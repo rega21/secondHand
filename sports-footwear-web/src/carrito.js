@@ -36,9 +36,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Mostrar lista de productos y total
     function mostrarListaCarrito() {
-        // Espera hasta que window.productos esté definido y tenga productos
+        let div = document.getElementById('carritoLista');
+        if (!div) {
+            div = document.createElement('div');
+            div.id = 'carritoLista';
+            document.body.appendChild(div);
+        }
+
         if (!window.productos || !window.productos.length) {
-            alert('Los productos aún se están cargando. Intenta de nuevo en un momento.');
+            div.innerHTML = '<div class="text-center py-5"><div class="spinner-border"></div><p class="mt-3">Cargando productos...</p></div>';
             return;
         }
         const carrito = JSON.parse(localStorage.getItem('carrito')) || {};
@@ -71,15 +77,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 total += prod.precio * cantidad;
             }
         });
-        html += `</ul><hr><div class="carrito-total" style="text-align:right;font-size:1.1rem;font-weight:700;color:#007bff;">Total: $${total}</div>`;
+        html += `</ul><hr><div class="carrito-total" style="text-align:right;font-size:1.1rem;font-weight:700;color:#007bff;">Total: $${total}</div>
+        <button class="btn btn-success w-100 mt-3" id="btnComprarCarrito">Comprar</button>`;
 
-        let div = document.getElementById('carritoLista');
-        if (!div) {
-            div = document.createElement('div');
-            div.id = 'carritoLista';
-            document.body.appendChild(div);
-        }
         div.innerHTML = html;
+
+        // ...luego de renderizar el HTML, agrega el listener:
+        const btnComprar = div.querySelector('#btnComprarCarrito');
+        if (btnComprar) {
+            btnComprar.addEventListener('click', function() {
+                const usuario = JSON.parse(localStorage.getItem('usuario'));
+                if (!usuario) {
+                    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                    loginModal.show();
+                } else {
+                    alert(`¡Gracias por tu compra, te enviaremos un recibo a tu dirección de correo ${usuario.mail}!`);
+                    // Limpiar carrito
+                    localStorage.removeItem('carrito');
+                    actualizarIconoCarrito();
+                    mostrarListaCarrito();
+                }
+            });
+        }
 
         // Flechita decorativa
         div.style.position = 'absolute';
@@ -222,5 +241,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
+
 });
 

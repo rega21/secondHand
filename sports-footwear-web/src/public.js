@@ -1,4 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Leer el parámetro de categoría de la URL
+    const params = new URLSearchParams(window.location.search);
+    const categoriaURL = params.get('categoria');
+    if (categoriaURL) {
+        // Asigna el filtro de categoría y renderiza filtrado
+        filtroCategoria = categoriaURL;
+    }
+
     const contenedor = document.querySelector('#productos .row.g-4');
     const filtroPrecio = document.getElementById('filtroPrecio');
     const checksTalle = document.querySelectorAll('input[type="checkbox"][id^="talle"]');
@@ -57,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderProductos(productosARenderizar = productos, min = precioMin, max = precioMax) {
         const productosFiltrados = productosARenderizar.filter(prod => {
             // Filtro por categoría
-            const categoriaOk = !filtroCategoria || prod.categoria === filtroCategoria;
+            const categoriaOk = !filtroCategoria || (filtroCategoria === 'sale' ? prod.badge && prod.badge.trim().toLowerCase() === 'sale' : prod.categoria === filtroCategoria);
             // Filtro por precio
             const precioOk = prod.precio >= min && prod.precio <= max;
             // Filtro por talle
@@ -78,7 +86,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         contenedor.innerHTML = productosFiltrados.map(prod => `
             <div class="col-md-4 producto" data-categoria="${prod.categoria}">
-                <div class="card card-producto">
+                <div class="card card-producto position-relative">
+                    ${prod.badge && prod.badge.trim().toLowerCase() === 'sale' ? `
+                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 fs-6" style="z-index:2;">SALE</span>
+                    ` : ''}
                     <img src="${prod.imagen}" class="card-img-top" alt="${prod.titulo}">
                     <button class="btn btn-link p-0 btn-favorito ms-2" data-id="${prod.id}" title="Agregar a favoritos">
                         <i class="bi bi-heart fs-4"></i>
@@ -95,12 +106,30 @@ document.addEventListener('DOMContentLoaded', function() {
         `).join('');
     }
 
+    // Función para resaltar la categoría activa en el dropdown Shop
+    function resaltarCategoriaActiva() {
+        document.querySelectorAll('.dropdown-menu .dropdown-item').forEach(link => {
+            link.classList.remove('active');
+        });
+        if (filtroCategoria) {
+            const linkActivo = document.querySelector(`.dropdown-menu .dropdown-item[data-categoria="${filtroCategoria}"]`);
+            if (linkActivo) linkActivo.classList.add('active');
+        }
+    }
+
+    // Al cargar la página, si hay categoría en la URL, resalta
+    if (categoriaURL) {
+        filtroCategoria = categoriaURL;
+        resaltarCategoriaActiva();
+    }
+
     // Filtro por categoría (botones y dropdown)
     document.querySelectorAll('[data-categoria]').forEach(el => {
         el.addEventListener('click', function(e) {
             e.preventDefault();
             filtroCategoria = el.getAttribute('data-categoria');
             renderProductos();
+            resaltarCategoriaActiva(); // Resalta la categoría seleccionada
         });
     });
 
@@ -153,18 +182,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (saleLink) {
             saleLink.addEventListener('click', function(e) {
                 e.preventDefault();
-                const productosSale = productos.filter(prod =>
-                    prod.badge && prod.badge.toLowerCase() === "sale"
-                );
-                if (productosSale.length === 0) {
-                    document.querySelector('#productos .row.g-4').innerHTML = `
-                        <div class="col-12 text-center py-5">
-                            <p class="text-muted fs-4">No hay productos en oferta actualmente.</p>
-                        </div>
-                    `;
-                } else {
-                    renderProductos(productosSale);
-                }
+                filtroCategoria = 'sale';
+                renderProductos();
+                resaltarCategoriaActiva && resaltarCategoriaActiva();
                 document.getElementById('productos').scrollIntoView({ behavior: 'smooth' });
             });
         }
@@ -185,4 +205,42 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.classList.remove('active');
       }
     });
+
+    // Asignar eventos a los botones de favorito
+    document.querySelectorAll('.btn-favorito').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const productoId = btn.getAttribute('data-id');
+            const usuario = JSON.parse(localStorage.getItem('usuario'));
+            if (!usuario) {
+                const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                loginModal.show();
+                return;
+            }
+            // Detecta si ya es favorito
+            const esFavoritoActual = btn.querySelector('i').classList.contains('bi-heart-fill');
+            // Cambia el ícono inmediatamente (optimista)
+            actualizarIconoFavorito(btn, !esFavoritoActual);
+            toggleFavorito(productoId, btn)
+                .catch(() => {
+                    // Si falla la API, revierte el cambio
+                    actualizarIconoFavorito(btn, esFavoritoActual);
+                });
+        });
+    });
+
+    // Renderizar productos al cargar la página con el filtro de categoría en la URL
+    renderProductos();
+
+    // Función para resaltar la categoría activa en el dropdown Shop
+    function resaltarCategoriaActiva() {
+        document.querySelectorAll('.dropdown-menu .dropdown-item').forEach(link => {
+            link.classList.remove('active');
+        });
+        if (filtroCategoria) {
+            const linkActivo = document.querySelector(`.dropdown-menu .dropdown-item[data-categoria="${filtroCategoria}"]`);
+            if (linkActivo) linkActivo.classList.add('active');
+        }
+    }
 });

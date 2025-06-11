@@ -175,6 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     localStorage.removeItem('usuario');
                     mostrarEstadoUsuario();
+                    desmarcarFavoritosAlCerrarSesion();
                 }
             } else {
                 // Si NO está logueado, abrir el modal de login
@@ -203,6 +204,15 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 crearCarrito(usuario.id, items)
                     .then(data => console.log('Carrito creado en API:', data));
+            }
+        });
+    }
+
+    function desmarcarFavoritosAlCerrarSesion() {
+        document.querySelectorAll('.btn-favorito').forEach(btn => {
+            const icon = btn.querySelector('i');
+            if (icon) {
+                icon.className = 'bi bi-heart fs-4';
             }
         });
     }

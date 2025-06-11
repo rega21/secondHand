@@ -2,18 +2,38 @@ let todosLosProductos = []; // Guardamos todos los productos para restaurar la g
 let filtroFavoritosActivo = false;
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Leer el parámetro de categoría de la URL
+  const params = new URLSearchParams(window.location.search);
+  const categoriaURL = params.get('categoria');
+
   fetch('https://683db271199a0039e9e68933.mockapi.io/api-secondhand/productos')
     .then(response => response.json())
     .then(productos => {
       todosLosProductos = productos;
-      renderizarProductos(productos);
 
-      // Filtro Sale
+      // Si hay categoría en la URL, filtra antes de renderizar
+      if (categoriaURL) {
+        if (categoriaURL === 'sale') {
+          const productosSale = productos.filter(
+            p => p.badge && p.badge.trim().toLowerCase() === 'sale'
+          );
+          renderizarProductos(productosSale);
+        } else {
+          const productosFiltrados = productos.filter(p => p.categoria === categoriaURL);
+          renderizarProductos(productosFiltrados);
+        }
+      } else {
+        renderizarProductos(productos);
+      }
+
+      // Filtro Sale (por si el usuario hace click en el menú)
       const saleLink = document.querySelector('[data-categoria="sale"]');
       if (saleLink) {
         saleLink.addEventListener('click', function(e) {
           e.preventDefault();
-          const productosSale = productos.filter(p => p.badge && p.badge.toLowerCase() === 'sale');
+          const productosSale = productos.filter(
+            p => p.badge && p.badge.trim().toLowerCase() === 'sale'
+          );
           renderizarProductos(productosSale);
         });
       }
@@ -92,12 +112,26 @@ function renderizarProductos(productos) {
   // Asignar eventos a los botones de favorito
   document.querySelectorAll('.btn-favorito').forEach(btn => {
     btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      const productoId = btn.getAttribute('data-id');
-      toggleFavorito(productoId, btn);
+        e.preventDefault();
+        e.stopPropagation();
+        const productoId = btn.getAttribute('data-id');
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        if (!usuario) {
+            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            loginModal.show();
+            return;
+        }
+        // Detecta si ya es favorito
+        const esFavoritoActual = btn.querySelector('i').classList.contains('bi-heart-fill');
+        // Cambia el ícono inmediatamente (optimista)
+        actualizarIconoFavorito(btn, !esFavoritoActual);
+        toggleFavorito(productoId, btn)
+            .catch(() => {
+                // Si falla la API, revierte el cambio
+                actualizarIconoFavorito(btn, esFavoritoActual);
+            });
     });
-  });
+});
 
   // Marcar favoritos del usuario
   const usuario = JSON.parse(localStorage.getItem('usuario'));

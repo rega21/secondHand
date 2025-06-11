@@ -20,32 +20,31 @@
             <!-- Navbar principal para todas las páginas -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 mt-4 rounded">
   <div class="container justify-content-center">
-    <ul class="navbar-nav flex-row me-auto">
-      <li class="nav-item mx-2">
-        <a class="nav-link text-white fw-semibold" href="index.html">Inicio</a>
-      </li>
-      <li class="nav-item mx-2">
-        <a class="nav-link text-white fw-semibold" href="historia.html">Quiénes Somos</a>
-      </li>
-      <li class="nav-item dropdown mx-2">
-        <a class="nav-link dropdown-toggle text-white fw-semibold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          Shop
-        </a>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#" data-categoria="accesorios">Accesorios</a></li>
-          <li><a class="dropdown-item" href="#" data-categoria="jeans">Jeans</a></li>
-          <li><a class="dropdown-item" href="#" data-categoria="deportivos">Deportivos</a></li>
-          <li><a class="dropdown-item" href="#" data-categoria="remeras">Remeras</a></li>
-          <li><a class="dropdown-item" href="#" data-categoria="shorts">Shorts</a></li>
-        </ul>
-      </li>
-      <li class="nav-item mx-2">
-        <a class="nav-link text-white fw-semibold" href="#" data-categoria="sale">Sale</a>
-      </li>
-      <li class="nav-item mx-2">
-        <a class="nav-link text-white fw-semibold" href="contacto.html">Contacto</a>
-      </li>
+    <ul class="navbar-nav flex-row">
+  <li class="nav-item mx-2">
+    <a class="nav-link text-white fw-semibold" href="index.html" data-section="inicio">Inicio</a>
+  </li>
+  <li class="nav-item mx-2">
+    <a class="nav-link text-white fw-semibold" href="historia.html">Quiénes Somos</a>
+  </li>
+  <li class="nav-item dropdown mx-2">
+    <a class="nav-link dropdown-toggle text-white fw-semibold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      Shop
+    </a>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="index.html?categoria=accesorios" data-categoria="accesorios">Accesorios</a></li>
+      <li><a class="dropdown-item" href="index.html?categoria=jeans" data-categoria="jeans">Jeans</a></li>
+      <li><a class="dropdown-item" href="index.html?categoria=deportivos" data-categoria="deportivos">Deportivos</a></li>
+      <li><a class="dropdown-item" href="index.html?categoria=remeras" data-categoria="remeras">Remeras</a></li>
+      <li><a class="dropdown-item" href="index.html?categoria=shorts" data-categoria="shorts">Shorts</a></li>
+      <li><hr class="dropdown-divider"></li>
+      <li><a class="dropdown-item" href="index.html?categoria=sale" data-categoria="sale">Sale</a></li>
     </ul>
+  </li>
+  <li class="nav-item mx-2">
+    <a class="nav-link text-white fw-semibold" href="contacto.html">Contacto</a>
+  </li>
+</ul>
     <div class="d-flex align-items-center gap-3 ms-auto">
       <a href="#" class="text-white position-relative" title="Carrito">
   <i class="bi bi-bag" style="font-size: 1.5rem;"></i>
