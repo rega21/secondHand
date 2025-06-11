@@ -1,7 +1,11 @@
+let todosLosProductos = []; // Guardamos todos los productos para restaurar la grilla
+let filtroFavoritosActivo = false;
+
 document.addEventListener('DOMContentLoaded', () => {
   fetch('https://683db271199a0039e9e68933.mockapi.io/api-secondhand/productos')
     .then(response => response.json())
     .then(productos => {
+      todosLosProductos = productos;
       renderizarProductos(productos);
 
       // Filtro Sale
@@ -17,6 +21,50 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(error => {
       console.error('Error al cargar productos:', error);
     });
+
+  // Filtro de favoritos desde el navbar
+  const favNavbar = document.getElementById('navbarFavoritos');
+  if (favNavbar) {
+    favNavbar.addEventListener('click', async function(e) {
+      e.preventDefault();
+      filtroFavoritosActivo = !filtroFavoritosActivo;
+      const icon = favNavbar.querySelector('i');
+      if (filtroFavoritosActivo) {
+        icon.classList.add('text-danger');
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        if (!usuario) {
+          alert('Debes iniciar sesión para ver tus favoritos.');
+          filtroFavoritosActivo = false;
+          icon.classList.remove('text-danger');
+          return;
+        }
+        let favoritos = [];
+        try {
+          const res = await fetch(`https://683db271199a0039e9e68933.mockapi.io/api-secondhand/favoritos?usuarioId=${usuario.id}`);
+          if (res.ok) {
+            favoritos = await res.json();
+          }
+        } catch (err) {
+          favoritos = [];
+        }
+        if (!Array.isArray(favoritos)) favoritos = [];
+        const favoritosIds = favoritos.length ? favoritos.map(f => String(f.productoId)) : [];
+        const productosFavoritos = todosLosProductos.filter(p => favoritosIds.includes(String(p.id)));
+        if (productosFavoritos.length === 0) {
+          document.querySelector('#productos .row').innerHTML = `
+            <div class="col-12 text-center py-5">
+              <p class="text-muted fs-4">No tienes productos favoritos aún.</p>
+            </div>
+          `;
+        } else {
+          renderizarProductos(productosFavoritos);
+        }
+      } else {
+        icon.classList.remove('text-danger');
+        renderizarProductos(todosLosProductos);
+      }
+    });
+  }
 });
 
 function renderizarProductos(productos) {
@@ -24,18 +72,85 @@ function renderizarProductos(productos) {
   contenedor.innerHTML = '';
   productos.forEach(producto => {
     contenedor.innerHTML += `
-      <div class="col-md-4">
-        <div class="card h-100">
+      <div class="col-md-4 producto" data-categoria="${producto.categoria}">
+        <div class="card card-producto">
           <img src="${producto.imagen}" class="card-img-top" alt="${producto.titulo}">
+          <button class="btn btn-link p-0 btn-favorito ms-2" data-id="${producto.id}" title="Agregar a favoritos">
+            <i class="bi bi-heart fs-4"></i>
+          </button>
           <div class="card-body">
             <h5 class="card-title">${producto.titulo}</h5>
             <p class="card-text">${producto.descripcion}</p>
-            <p class="card-text fw-bold">$${producto.precio}</p>
-            <button class="btn btn-success btn-agregar" data-id="${producto.id}">Agregar al carrito</button>
+            <p class="card-text"><strong>Precio:</strong> $${producto.precio}</p>
+            <p class="card-text"><span class="badge">${producto.badge || ''}</span></p>
+            <button class="btn btn-primary btn-agregar-carrito" data-id="${producto.id}">Agregar</button>
           </div>
         </div>
       </div>
     `;
   });
-  // Aquí puedes volver a asignar eventos a los botones si es necesario
+  // Asignar eventos a los botones de favorito
+  document.querySelectorAll('.btn-favorito').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const productoId = btn.getAttribute('data-id');
+      toggleFavorito(productoId, btn);
+    });
+  });
+
+  // Marcar favoritos del usuario
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+  if (usuario) {
+    fetch(`https://683db271199a0039e9e68933.mockapi.io/api-secondhand/favoritos?usuarioId=${usuario.id}`)
+      .then(res => res.json())
+      .then(favoritos => {
+        if (!Array.isArray(favoritos)) favoritos = [];
+        favoritos.forEach(fav => {
+          const btn = document.querySelector(`.btn-favorito[data-id="${fav.productoId}"]`);
+          if (btn) actualizarIconoFavorito(btn, true);
+        });
+      });
+  }
+}
+
+function toggleFavorito(productoId, btn) {
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+  if (!usuario) {
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('loginModal'));
+    modal.show();
+    return;
+  }
+
+  // Trae todos los favoritos del usuario y busca el producto en JS
+  fetch(`https://683db271199a0039e9e68933.mockapi.io/api-secondhand/favoritos?usuarioId=${usuario.id}`)
+    .then(res => res.json())
+    .then(favs => {
+      if (!Array.isArray(favs)) favs = [];
+      const fav = favs.find(f => String(f.productoId) === String(productoId));
+      if (fav) {
+        // Eliminar favorito
+        fetch(`https://683db271199a0039e9e68933.mockapi.io/api-secondhand/favoritos/${fav.id}`, {
+          method: 'DELETE'
+        }).then(() => {
+          actualizarIconoFavorito(btn, false);
+        });
+      } else {
+        // Agregar favorito
+        fetch('https://683db271199a0039e9e68933.mockapi.io/api-secondhand/favoritos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ usuarioId: usuario.id, productoId: String(productoId) })
+        }).then(() => {
+          actualizarIconoFavorito(btn, true);
+        });
+      }
+    });
+}
+
+function actualizarIconoFavorito(btn, esFavorito) {
+  const icon = btn.querySelector('i');
+  if (icon) {
+    icon.className = esFavorito ? 'bi bi-heart-fill fs-4 text-danger' : 'bi bi-heart fs-4';
+  }
 }

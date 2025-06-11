@@ -46,6 +46,14 @@ npm run build
 ```
 The build files will be generated in the `dist` directory.
 
+## Datos de Productos
+
+Los productos reales de la aplicación se obtienen desde la API de MockAPI:
+
+- [https://683db271199a0039e9e68933.mockapi.io/api-secondhand/productos](https://683db271199a0039e9e68933.mockapi.io/api-secondhand/productos)
+
+El archivo [`src/productos.json`](src/productos.json) solo contiene un producto de ejemplo para referencia de formato y **no es utilizado por la aplicación en producción**.
+
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.
 

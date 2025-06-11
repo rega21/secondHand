@@ -177,3 +177,47 @@ h1.display-6 {
     margin-top: 0;
   }
 }
+
+/* Asegura que la card sea el stacking context */
+.card.position-relative {
+  position: relative;
+}
+
+/* El botón de favorito siempre arriba */
+.btn-favorito {
+  position: absolute !important;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1000 !important;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* La imagen nunca debe tapar el botón */
+.card-img-top {
+  position: static !important;
+  z-index: auto !important;
+}
+
+.card.h-100 {
+    min-height: 420px; /* Ajusta este valor según tu diseño */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Si quieres forzar el color azul en todos los botones "Agregar" */
+.btn-agregar-carrito {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+    color: #fff !important;
+}
+
+.card.card-producto { position: relative; }
+
+.btn-favorito .bi-heart {
+  color: #dc3545 !important;
+}

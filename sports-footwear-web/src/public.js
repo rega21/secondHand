@@ -67,10 +67,22 @@ document.addEventListener('DOMContentLoaded', function() {
             return categoriaOk && precioOk && talleOk && generoOk;
         });
 
+        if (productosFiltrados.length === 0) {
+            contenedor.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted fs-4">No hay productos para mostrar.</p>
+                </div>
+            `;
+            return;
+        }
+
         contenedor.innerHTML = productosFiltrados.map(prod => `
             <div class="col-md-4 producto" data-categoria="${prod.categoria}">
                 <div class="card card-producto">
                     <img src="${prod.imagen}" class="card-img-top" alt="${prod.titulo}">
+                    <button class="btn btn-link p-0 btn-favorito ms-2" data-id="${prod.id}" title="Agregar a favoritos">
+                        <i class="bi bi-heart fs-4"></i>
+                    </button>
                     <div class="card-body">
                         <h5 class="card-title">${prod.titulo}</h5>
                         <p class="card-text">${prod.descripcion}</p>
@@ -144,7 +156,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 const productosSale = productos.filter(prod =>
                     prod.badge && prod.badge.toLowerCase() === "sale"
                 );
-                renderProductos(productosSale);
+                if (productosSale.length === 0) {
+                    document.querySelector('#productos .row.g-4').innerHTML = `
+                        <div class="col-12 text-center py-5">
+                            <p class="text-muted fs-4">No hay productos en oferta actualmente.</p>
+                        </div>
+                    `;
+                } else {
+                    renderProductos(productosSale);
+                }
                 document.getElementById('productos').scrollIntoView({ behavior: 'smooth' });
             });
         }
