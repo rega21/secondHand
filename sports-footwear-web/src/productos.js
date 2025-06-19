@@ -109,43 +109,34 @@ function renderizarProductos(productos) {
       </div>
     `;
   });
-  // Asignar eventos a los botones de favorito
+
+  // Marcar favoritos del usuario desde localStorage
+  const favoritosLS = JSON.parse(localStorage.getItem('favoritos')) || [];
+  favoritosLS.forEach(productoId => {
+    const btn = document.querySelector(`.btn-favorito[data-id="${productoId}"]`);
+    if (btn) actualizarIconoFavorito(btn, true);
+  });
+
+  // ASIGNAR EVENTOS A LOS CORAZONES (esto es CLAVE)
   document.querySelectorAll('.btn-favorito').forEach(btn => {
     btn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const productoId = btn.getAttribute('data-id');
-        const usuario = JSON.parse(localStorage.getItem('usuario'));
-        if (!usuario) {
-            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-            loginModal.show();
-            return;
-        }
-        // Detecta si ya es favorito
-        const esFavoritoActual = btn.querySelector('i').classList.contains('bi-heart-fill');
-        // Cambia el ícono inmediatamente (optimista)
-        actualizarIconoFavorito(btn, !esFavoritoActual);
-        toggleFavorito(productoId, btn)
-            .catch(() => {
-                // Si falla la API, revierte el cambio
-                actualizarIconoFavorito(btn, esFavoritoActual);
-            });
-    });
-});
-
-  // Marcar favoritos del usuario
-  const usuario = JSON.parse(localStorage.getItem('usuario'));
-  if (usuario) {
-    fetch(`https://683db271199a0039e9e68933.mockapi.io/api-secondhand/favoritos?usuarioId=${usuario.id}`)
-      .then(res => res.json())
-      .then(favoritos => {
-        if (!Array.isArray(favoritos)) favoritos = [];
-        favoritos.forEach(fav => {
-          const btn = document.querySelector(`.btn-favorito[data-id="${fav.productoId}"]`);
-          if (btn) actualizarIconoFavorito(btn, true);
+      e.preventDefault();
+      e.stopPropagation();
+      const productoId = btn.getAttribute('data-id');
+      const usuario = JSON.parse(localStorage.getItem('usuario'));
+      if (!usuario) {
+        const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        loginModal.show();
+        return;
+      }
+      const esFavoritoActual = btn.querySelector('i').classList.contains('bi-heart-fill');
+      actualizarIconoFavorito(btn, !esFavoritoActual);
+      toggleFavorito(productoId, btn)
+        .catch(() => {
+          actualizarIconoFavorito(btn, esFavoritoActual);
         });
-      });
-  }
+    });
+  });
 }
 
 function toggleFavorito(productoId, btn) {
@@ -153,30 +144,39 @@ function toggleFavorito(productoId, btn) {
   if (!usuario) {
     const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('loginModal'));
     modal.show();
-    return;
+    return Promise.resolve(); // Así puedes usar .catch() sin error
   }
 
-  // Trae todos los favoritos del usuario y busca el producto en JS
-  fetch(`https://683db271199a0039e9e68933.mockapi.io/api-secondhand/favoritos?usuarioId=${usuario.id}`)
+  return fetch(`https://683db271199a0039e9e68933.mockapi.io/api-secondhand/favoritos?usuarioId=${usuario.id}`)
     .then(res => res.json())
     .then(favs => {
       if (!Array.isArray(favs)) favs = [];
       const fav = favs.find(f => String(f.productoId) === String(productoId));
       if (fav) {
         // Eliminar favorito
-        fetch(`https://683db271199a0039e9e68933.mockapi.io/api-secondhand/favoritos/${fav.id}`, {
+        return fetch(`https://683db271199a0039e9e68933.mockapi.io/api-secondhand/favoritos/${fav.id}`, {
           method: 'DELETE'
         }).then(() => {
           actualizarIconoFavorito(btn, false);
+          // Actualiza localStorage
+          let favoritosLS = JSON.parse(localStorage.getItem('favoritos')) || [];
+          favoritosLS = favoritosLS.filter(id => id !== productoId);
+          localStorage.setItem('favoritos', JSON.stringify(favoritosLS));
         });
       } else {
         // Agregar favorito
-        fetch('https://683db271199a0039e9e68933.mockapi.io/api-secondhand/favoritos', {
+        return fetch('https://683db271199a0039e9e68933.mockapi.io/api-secondhand/favoritos', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ usuarioId: usuario.id, productoId: String(productoId) })
         }).then(() => {
           actualizarIconoFavorito(btn, true);
+          // Actualiza localStorage
+          let favoritosLS = JSON.parse(localStorage.getItem('favoritos')) || [];
+          if (!favoritosLS.includes(productoId)) {
+            favoritosLS.push(productoId);
+            localStorage.setItem('favoritos', JSON.stringify(favoritosLS));
+          }
         });
       }
     });

@@ -46,6 +46,14 @@ document.addEventListener('DOMContentLoaded', function() {
                                 location.reload();
                             }, 1000);
                         });
+                        // Obtener y guardar favoritos del usuario
+                        fetch(`https://683db271199a0039e9e68933.mockapi.io/api-secondhand/favoritos?usuarioId=${users[0].id}`)
+                          .then(res => res.json())
+                          .then(favoritos => {
+                            if (!Array.isArray(favoritos)) favoritos = [];
+                            localStorage.setItem('favoritos', JSON.stringify(favoritos.map(f => String(f.productoId))));
+                            // No hace falta actualizar los corazones aquí si recargas la página después
+                          });
                     } else {
                         alert('Mail o contraseña incorrectos');
                     }
